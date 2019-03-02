@@ -65,29 +65,32 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void validate(String userName, String userPassword){
+    private void validate(String userName, String userPassword) {
 
-        progressDialog.setMessage("Logging you in!");
-        progressDialog.show();
+        if (userName.isEmpty() || userPassword.isEmpty()) {
+            Toast.makeText(this, "Please enter all the details", Toast.LENGTH_SHORT).show();
+        } else {
+            progressDialog.setMessage("Logging you in!");
+            progressDialog.show();
 
-        firebaseAuth.signInWithEmailAndPassword(userName, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                 if(task.isSuccessful()){
-                     progressDialog.dismiss();
-                     Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                     startActivity(new Intent(LoginActivity.this,FeedbackActivity.class));
-                 }
-                 else{
-                     progressDialog.dismiss();
-                     Toast.makeText(LoginActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
-                     counter--;
-                     Info.setText("No of attempts remaining: "+counter);
-                     if(counter==0){
-                         Login.setEnabled(false);
-                     }
-                 }
-            }
-        });
+            firebaseAuth.signInWithEmailAndPassword(userName, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        progressDialog.dismiss();
+                        Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(LoginActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
+                        counter--;
+                        Info.setText("No of attempts remaining: " + counter);
+                        if (counter == 0) {
+                            Login.setEnabled(false);
+                        }
+                    }
+                }
+            });
+        }
     }
 }
