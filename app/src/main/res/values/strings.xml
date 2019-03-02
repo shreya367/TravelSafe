@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">Travel Safe</string>
     <string name="title_activity_maps">Map</string>
+    <string name="textview">TextView</string>
+    <string name="Feed1">Ques1</string>
+    <string name="Feed2">Road condition satisfactory</string>
+    <string name="Feed3">Ques3</string>
+
+    <string name="Feed4">Ques4</string>
+    <string name="Feed5">Ques5</string>
+    <string name="Feed6">Ques6</string>
+    <string name="Feed7">Ques7</string>
+    <string name="Feed8">Ques8</string>
+    <string name="Feed9">How was your overall experience </string>
 </resources>
