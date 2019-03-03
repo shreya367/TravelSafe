@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -43,12 +44,12 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog=new ProgressDialog(this);
 
         //Uncomment to keep current user logged in
-       /* FirebaseUser user= firebaseAuth.getCurrentUser();
+       FirebaseUser user= firebaseAuth.getCurrentUser();
 
         if(user!=null){
             finish();
             startActivity(new Intent(LoginActivity.this,SecondActivity.class));
-        }*/
+        }
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         progressDialog.dismiss();
                         Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+                        startActivity(new Intent(LoginActivity.this, SecondActivity.class));
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(LoginActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
