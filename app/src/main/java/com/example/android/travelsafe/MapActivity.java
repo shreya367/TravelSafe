@@ -1,17 +1,21 @@
 package com.example.android.travelsafe;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
@@ -36,6 +40,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     //private static final LatLng WALL_STREET = new LatLng(40.7064, -74.0094);
     final String TAG = "MapActivity";
     String Source,Dest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +93,37 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         LatLng nit = new LatLng(22.777015,86.144621);
         googleMap.addMarker(new MarkerOptions().position(nit).title("Marker in nit"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nit,15));
+
+        googleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener()
+        {
+            @Override
+            public void onPolylineClick(Polyline polyline)
+            {
+                int strokeColor = polyline.getColor() ^ 0x0000CC00;
+                polyline.setColor(strokeColor);
+                List<LatLng>list=polyline.getPoints();
+                Log.e("TAG", "Polyline points @ " + polyline.getPoints());
+                int n=list.size();
+                String Lat=Double.toString(list.get(n/2).latitude);
+                String Long=Double.toString(list.get(n/2).longitude);
+                Log.d("POINT",Lat+Long);
+               Toast.makeText(MapActivity.this, "Polyline click: " + Lat+" "+Long, Toast.LENGTH_LONG).show();
+
+                BitmapDescriptor transparent = BitmapDescriptorFactory.fromResource(R.drawable.transparent);
+                MarkerOptions options = new MarkerOptions()
+                        .position(new LatLng(Double.valueOf(Lat), Double.valueOf(Long)))
+                        .title("Overall Score")
+                        .snippet("someSnippet")
+                        .icon(transparent)
+                        .anchor((float) 0.5, (float) 0.5); //puts the info window on the polyline
+
+                Marker marker = googleMap.addMarker(options);
+
+//open the marker's info window
+                marker.showInfoWindow();
+            }
+        });
+
     }
 
         private String getMapsApiDirectionsUrl() {
@@ -106,6 +142,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             Log.d("MyApp",url);
             return url;
         }
+
 
      /*   private void addMarkers() {
             if (googleMap != null) {
@@ -174,6 +211,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
                 ArrayList<LatLng> points = null;
                 PolylineOptions polyLineOptions = null;
+                int[] colors=new int[4];
+                colors[0]=0xFF0000FF;
+                colors[1]=0xFFFF0000;
+                colors[2]=0xFF888888;
+                colors[3]=0xFF00FF00;
+
                 Log.d("Routes",""+routes.size());
                 // traversing through routes
                 for (int i = 0; i < routes.size(); i++) {
@@ -193,8 +236,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
                     polyLineOptions.addAll(points);
                     polyLineOptions.width(10);
-                    polyLineOptions.color(Color.BLUE);
-                    googleMap.addPolyline(polyLineOptions);
+                    polyLineOptions.color(colors[i%4]);
+                    Polyline polyline= googleMap.addPolyline(polyLineOptions);
+                    polyline.setClickable(true);
                 }
                 String listString = "";
 
@@ -206,6 +250,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 //googleMap.addPolyline(polyLineOptions);
                 Log.d("Line","Line drawn");
             }
+
+            /* googleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener()
+            {
+                @Override
+                public void onPolylineClick(Polyline polyline)
+                {
+                    //do something with polyline
+                    Log.d("PolyLine","Polyline clicked");
+                }
+            });*/
         }
 
 }
